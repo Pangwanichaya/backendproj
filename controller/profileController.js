@@ -3,7 +3,19 @@ const { User } = require("../models");
 exports.getProfileById = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const user = await User.findAll({ where: { id } });
+    const user = await User.findOne({
+      where: { id },
+      attributes: { exclude: ["createdAt", "updatedAt"] },
+      order: [
+        "username",
+        "password",
+        "name",
+        "address",
+        "birthdate",
+        "email",
+        "phone",
+      ],
+    });
     res.json({ user });
   } catch (err) {
     next(err);
@@ -16,10 +28,11 @@ exports.updateProfile = async (req, res, next) => {
     const { username, password, name, address, birthdate, email, phone } =
       req.body;
     //destructuring array index 0
+    const hasedPassword = await bcrypt.hash(password, 12);
     const [rows] = await User.update(
       {
         username,
-        password,
+        password: hasedPassword,
         name,
         address,
         birthdate,
