@@ -2,19 +2,8 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { User } = require("../models");
 
-exports.checkRole =
-  (...roles) =>
-  async (req, res, next) => {
-    if (!roles.includes(req, res, next)) {
-      res.status(403).json({ message: "You not allowed" });
-    }
-    next();
-  };
-
 exports.authenticate = async (req, res, next) => {
   try {
-    // get request headers
-    // const headers = req.headers;
     const { authorization } = req.headers;
     if (!authorization || !authorization.startsWith("Bearer")) {
       return res.status(401).json({ message: "you are unauthorized" });
@@ -27,7 +16,6 @@ exports.authenticate = async (req, res, next) => {
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
-    // decoded { id: , email: , username }
 
     const user = await User.findOne({ where: { id: decoded.id } });
     if (!user) {
@@ -60,12 +48,12 @@ exports.login = async (req, res, next) => {
 
     const payload = {
       id: user.id,
-      email: user.email,
       username: user.username,
+      email: user.email,
     };
 
     const token = jwt.sign(payload, process.env.JWT_SECRET_KEY, {
-      expiresIn: 1500,
+      expiresIn: 60 * 60 * 24 * 30,
     }); // '30d' 60 * 60 * 24 * 30
     res.json({ message: "success logged in", token });
   } catch (err) {
