@@ -26,10 +26,16 @@ exports.getProductById = async (req, res, next) => {
 exports.createProduct = async (req, res, next) => {
   try {
     // 1. รับ req ที่ส่งเข้ามาทาง  body
-    const category = req.category;
+
     // destructuring obj data จาก req ในส่วน body
-    const { productname, productdetail, productprice, productamount, picurl } =
-      req.body;
+    const {
+      productname,
+      productdetail,
+      productprice,
+      productamount,
+      picurl,
+      categoryId,
+    } = req.body;
     //ใช้คำสั่ง squelize สร้างสินค้าลงใน DB
     const product = await Product.create({
       productname,
@@ -37,7 +43,7 @@ exports.createProduct = async (req, res, next) => {
       productprice,
       productamount,
       picurl,
-      categoryId: category.id,
+      categoryId,
     });
     res.status(201).json({ product });
   } catch (err) {
