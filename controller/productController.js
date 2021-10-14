@@ -1,9 +1,17 @@
 const { Product } = require("../models");
+const { Category } = require("../models");
+const util = require("util");
+const cloudinary = require("cloudinary").v2;
+
+const uploadPromise = util.promisify(cloudinary.uploader.upload);
 
 exports.getAllProducts = async (req, res, next) => {
   try {
     const products = await Product.findAll({
-      where: { categoryId: req.category.id },
+      include: {
+        model: Category,
+        require: true,
+      },
     });
     res.json({ products });
   } catch (err) {
@@ -14,9 +22,7 @@ exports.getAllProducts = async (req, res, next) => {
 exports.getProductById = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const product = await Product.findAll({
-      where: { id, categoryId: req.category.id },
-    });
+    const product = await Product.findOne({ where: { id } });
     res.json({ product });
   } catch (err) {
     next(err);
@@ -37,14 +43,17 @@ exports.createProduct = async (req, res, next) => {
       categoryId,
     } = req.body;
     //ใช้คำสั่ง squelize สร้างสินค้าลงใน DB
+    const result = await uploadPromise(req.file.path, { timeout: 2000000 });
+
     const product = await Product.create({
       productname,
       productdetail,
       productprice,
       productamount,
-      picurl,
-      categoryId,
+      picurl: result.secure_url,
+      categoryId: categoryId,
     });
+    console.log(picurl);
     res.status(201).json({ product });
   } catch (err) {
     next(err);
@@ -54,8 +63,14 @@ exports.createProduct = async (req, res, next) => {
 exports.updateProduct = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const { productname, productdetail, productprice, productamount, picurl } =
-      req.body;
+    const {
+      productname,
+      productdetail,
+      productprice,
+      productamount,
+      picurl,
+      categoryId,
+    } = req.body;
     //destructuring array index 0
     const [rows] = await Product.update(
       {
@@ -64,12 +79,11 @@ exports.updateProduct = async (req, res, next) => {
         productprice,
         productamount,
         picurl,
-        categoryId: category.id,
+        categoryId,
       },
       {
         where: {
           id,
-          categoryId: req.category.id,
         },
       }
     );
@@ -89,7 +103,6 @@ exports.deleteProduct = async (req, res, next) => {
     const rows = await Product.destroy({
       where: {
         id,
-        categoryId: req.category.id,
       },
     });
 
