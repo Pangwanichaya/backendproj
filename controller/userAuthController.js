@@ -1,6 +1,11 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { User } = require("../models");
+const fs = require("fs");
+const util = require("util");
+const cloudinary = require("cloudinary").v2;
+
+const uploadPromise = util.promisify(cloudinary.uploader.upload);
 
 exports.authenticate = async (req, res, next) => {
   try {

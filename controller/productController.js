@@ -26,7 +26,7 @@ exports.getProductById = async (req, res, next) => {
 exports.createProduct = async (req, res, next) => {
   try {
     // 1. รับ req ที่ส่งเข้ามาทาง  body
-
+    console.log(req.body);
     // destructuring obj data จาก req ในส่วน body
     const {
       productname,

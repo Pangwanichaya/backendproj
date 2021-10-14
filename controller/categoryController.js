@@ -33,6 +33,7 @@ exports.getcategoryById = async (req, res, next) => {
 exports.createCategory = async (req, res, next) => {
   try {
     const { categoryname } = req.body;
+    console.log("Cate", req.body);
     const catagory = await Category.create({
       categoryname,
     });
