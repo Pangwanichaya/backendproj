@@ -85,3 +85,15 @@ exports.register = async (req, res, next) => {
     next(err);
   }
 };
+
+exports.checkadmin = async (req, res, next) => {
+  try {
+    if (req.user === "USER") {
+      next();
+    } else {
+      res.status(400).send({ message: "You are not admin" });
+    }
+  } catch (err) {
+    next(err);
+  }
+};

@@ -13,6 +13,7 @@ const userAuthRoute = require("./routes/userAuthRoute");
 const categoryRoute = require("./routes/categoryRoute");
 const profileRoute = require("./routes/profileRoute");
 const productRoute = require("./routes/productRoute");
+const orderRoute = require("./routes/orderRoute");
 
 const app = express();
 
@@ -26,6 +27,8 @@ app.use("/category", categoryRoute);
 app.use("/profile", profileRoute);
 
 app.use("/product", productRoute);
+
+app.use("/order", orderRoute);
 
 app.use((req, res, next) => {
   res.status(404).json({ message: "resource not found on this server" });

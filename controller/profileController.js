@@ -1,5 +1,5 @@
 const { User } = require("../models");
-
+const bcrypt = require("bcryptjs");
 exports.getProfileById = async (req, res, next) => {
   try {
     const { id } = req.params;
@@ -28,6 +28,7 @@ exports.updateProfile = async (req, res, next) => {
     const { username, password, name, address, birthdate, email, phone } =
       req.body;
     //destructuring array index 0
+
     const hasedPassword = await bcrypt.hash(password, 12);
     const [rows] = await User.update(
       {

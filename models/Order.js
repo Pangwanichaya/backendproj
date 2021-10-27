@@ -9,7 +9,7 @@ module.exports = (sequelize, DataTypes) => {
 
       paymentstatus: {
         type: DataTypes.ENUM("PENDING", "COMPLETED"),
-        allowNull: false,
+        defaultValue: "PENDING",
       },
       picurl: {
         type: DataTypes.STRING,
@@ -38,6 +38,15 @@ module.exports = (sequelize, DataTypes) => {
     Order.belongsTo(models.User, {
       foreignKey: {
         name: "userId",
+        allowNull: false,
+      },
+      onDelete: "RESTRICT",
+      onUpdate: "RESTRICT",
+    });
+
+    Order.hasMany(models.OrderItem, {
+      foreignKey: {
+        name: "orderId",
         allowNull: false,
       },
       onDelete: "RESTRICT",

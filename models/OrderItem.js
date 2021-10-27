@@ -2,7 +2,7 @@ module.exports = (sequelize, DataTypes) => {
   const OrderItem = sequelize.define(
     "OrderItem",
     {
-      productamount: {
+      qty: {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
