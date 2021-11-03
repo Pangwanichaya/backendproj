@@ -55,6 +55,11 @@ exports.login = async (req, res, next) => {
       id: user.id,
       username: user.username,
       email: user.email,
+      role: user.role,
+      address: user.address,
+      phone: user.phone,
+      birthdate: user.birthdate,
+      name: user.name,
     };
 
     const token = jwt.sign(payload, process.env.JWT_SECRET_KEY, {
@@ -67,7 +72,7 @@ exports.login = async (req, res, next) => {
 };
 exports.register = async (req, res, next) => {
   try {
-    const { username, password, name, address, birthdate, email, phone } =
+    const { username, password, name, address, birthdate, email, phone, role } =
       req.body;
     const hashedPassword = await bcrypt.hash(password, 10);
     await User.create({
@@ -78,6 +83,7 @@ exports.register = async (req, res, next) => {
       birthdate,
       email,
       phone,
+      role,
     });
     res.status(200).json({ msg: "Register Successfully" });
   } catch (err) {
@@ -88,7 +94,7 @@ exports.register = async (req, res, next) => {
 
 exports.checkadmin = async (req, res, next) => {
   try {
-    if (req.user === "USER") {
+    if (req.user === "ADMIN") {
       next();
     } else {
       res.status(400).send({ message: "You are not admin" });

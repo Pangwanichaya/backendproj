@@ -16,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       productamount: {
         type: DataTypes.INTEGER,
-        allowNull: false,
+        allowNull: true,
       },
       picurl: {
         type: DataTypes.STRING,
@@ -26,6 +26,7 @@ module.exports = (sequelize, DataTypes) => {
 
     {
       underscored: true, // map ชื่อ colunm ในรูปแบบ uderScore
+      paranoid: true,
     }
   );
 
