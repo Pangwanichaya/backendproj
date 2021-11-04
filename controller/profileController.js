@@ -28,12 +28,15 @@ exports.updateProfile = async (req, res, next) => {
     const { username, password, name, address, birthdate, email, phone } =
       req.body;
     //destructuring array index 0
+    console.log(password);
+    console.log("////");
 
     const hasedPassword = await bcrypt.hash(password, 12);
     const [rows] = await User.update(
       {
         username,
-        password: hasedPassword,
+        password:
+          !password || password.trim() === "" ? undefined : hasedPassword,
         name,
         address,
         birthdate,
